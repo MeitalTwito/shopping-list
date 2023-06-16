@@ -12,37 +12,64 @@ const initialItems = [
 
 export default function App() {
   const [items, setItems] = useState(initialItems);
-  function handleAddItem(item) {
-    console.log(item);
+  function handleAddItem(newItem) {
+    setItems((items) => [...items, newItem]);
+  }
+  function handleItemBought(id) {
+    console.log(id);
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, bought: !item.bought } : item
+      )
+    );
+  }
+  function handleItemDelete(id) {
+    setItems((items) => [...items].filter((item) => item.id !== id));
   }
   return (
     <div className="App">
       <header>My Shopping List</header>
-      <ShoppingList items={items} />
+      {items.length >= 1 && (
+        <ShoppingList
+          items={items}
+          onItemBought={handleItemBought}
+          onItemDelete={handleItemDelete}
+        />
+      )}
       <FormAddItem onAddItem={handleAddItem} />
     </div>
   );
 }
 
-function ShoppingList({ items }) {
+function ShoppingList({ items, onItemBought, onItemDelete }) {
   return (
     <ul className="shopping-list">
       {items.map((item) => (
-        <Item item={item} key={item.id} />
+        <Item
+          item={item}
+          key={item.id}
+          onItemBought={onItemBought}
+          onItemDelete={onItemDelete}
+        />
       ))}
     </ul>
   );
 }
 
-function Item({ item }) {
-  console.log(item);
+function Item({ item, onItemBought, onItemDelete }) {
   return (
     <li>
-      <input type="checkbox" />
+      <input
+        type="checkbox"
+        value={item.bought}
+        onChange={() => onItemBought(item.id)}
+      />
       <span className="emoji">{item.emoji}</span>
-      <span>{item.name}</span>
+      <span className={item.bought ? "bought" : ""}>{item.name}</span>
       <span>{item.quantity}</span>
-      <span className="delete-btn">🅧</span>
+      <span className="delete-btn" onClick={() => onItemDelete(item.id)}>
+        🅧
+      </span>
     </li>
   );
 }
@@ -54,6 +81,7 @@ function FormAddItem({ onAddItem }) {
 
   function handleSumbit(e) {
     e.preventDefault();
+    if (!emoji || !itemName || !quantity) return;
     const newItem = {
       emoji,
       name: itemName,
@@ -61,7 +89,10 @@ function FormAddItem({ onAddItem }) {
       bought: false,
       id: Date.now(),
     };
-    console.log(newItem);
+    onAddItem(newItem);
+    setEmoji("");
+    setItemName("");
+    setQuantity("");
   }
 
   return (

@@ -46,6 +46,10 @@ body {
   gap: 1rem;
   align-items: center;
 }
+.bought {
+  text-decoration: line-through;
+  color: #999;
+}
 
 .emoji {
   display: flex;
@@ -71,7 +75,7 @@ form {
   gap: 1rem;
 }
 
-form input {
+input {
   font-family: inherit;
   color: inherit;
   background-color: #ffffd7;
@@ -79,12 +83,35 @@ form input {
   border-radius: 50rem;
   font-size: 1.2rem;
   padding: 0.7rem 2rem;
+  transition: all 0.3s;
+}
+
+input:focus {
+  background-color: #ffffff;
+  outline: none;
 }
 
 form button {
-  background-color: #7f804e;
   border: none;
+  background-color: #7f804e;
   color: #ffffd7;
   border-radius: 50rem;
   cursor: pointer;
+  transition: all 0.3s;
+}
+
+form button:hover {
+  background-color: #191910;
+}
+
+@media screen and (max-width: 744px) {
+  form {
+    display: flex;
+    flex-direction: column;
+    /* grid-template-columns: repeat(3, 1fr) 0.5fr; */
+    gap: 1rem;
+  }
+  form button {
+    line-height: 2;
+  }
 }
